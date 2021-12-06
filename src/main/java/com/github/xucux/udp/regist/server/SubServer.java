@@ -4,7 +4,6 @@ import com.github.xucux.model.MsgType;
 import com.github.xucux.udp.regist.common.Decoder;
 import com.github.xucux.udp.regist.server.handler.SubHandler;
 import com.github.xucux.udp.regist.server.service.ServerCache;
-import com.github.xucux.util.FreePort;
 import com.github.xucux.util.IPUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -26,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  * @version: 1.0
  */
 @Slf4j
-public class SubServer implements Runnable{
+public class SubServer{
 
     private EventLoopGroup eventLoopGroup;
 
@@ -63,10 +62,9 @@ public class SubServer implements Runnable{
 
     public static ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(1);
 
-    @Override
-    public void run(){
+    public void start(int port){
         try {
-            int port = FreePort.build().getPortAndRelease();
+//            int port = FreePort.build().getPortAndRelease();
             ChannelFuture future = bootstrap.bind(port).sync();
             log.info("启动单播订阅服务，监听端口：{}",port);
             ServerCache.addServerInfo(IPUtils.getHostIp().concat(":").concat(String.valueOf(port)));

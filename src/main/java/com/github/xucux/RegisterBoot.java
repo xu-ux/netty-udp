@@ -7,6 +7,7 @@ import com.github.xucux.udp.regist.server.BroadSenderServer;
 import com.github.xucux.udp.regist.server.BroadSubServer;
 import com.github.xucux.udp.regist.server.SubServer;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -24,13 +25,21 @@ import java.util.concurrent.Executors;
 @Component
 public class RegisterBoot implements ApplicationListener<ContextRefreshedEvent> {
 
+    @Value("${sub.port}")
+    private Integer port;
+
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (event.getApplicationContext().getParent() == null) {
             try {
+                ExecutorService executorService = Executors.newFixedThreadPool(2);
+
                 // 启动单播订阅服务
-                new Thread(SubServer.getInstance()).start();
+                executorService.execute(()->{
+                    SubServer.getInstance().start(port);
+                });
+
                 // 启动广播订阅服务
                 new Thread( BroadSubServer.getInstance()).start();
                 new Thread(BroadSubClient.getInstance()).start();
@@ -38,7 +47,7 @@ public class RegisterBoot implements ApplicationListener<ContextRefreshedEvent> 
                 new Thread( BroadSenderServer.getInstance()).start();
                 new Thread(BroadSenderClient.getInstance()).start();
 
-                ExecutorService executorService = Executors.newFixedThreadPool(2);
+                // 启动单播发送服务
                 executorService.execute(()->{
                     SenderClient.getInstance().start();
                     try {

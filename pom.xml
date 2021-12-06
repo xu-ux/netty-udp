@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.github.xucux</groupId>
-    <artifactId>netty-test</artifactId>
+    <artifactId>netty-udp</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>netty-udp</name>
     <description>netty-udp 实现UDP单播和广播 </description>
@@ -44,6 +44,7 @@
     </dependencies>
 
     <build>
+        <finalName>netty-udp</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -55,6 +56,29 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>1.2.2</version>
+                <configuration>
+                    <imageName>${project.artifactId}:${project.version}</imageName>
+                    <baseImage>xuux/small-jre8:1.0</baseImage>
+<!--                    <dockerDirectory>${basedir}/docker</dockerDirectory>-->
+                    <entryPoint>["java", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                    <dockerHost>http://192.168.122.22:2375</dockerHost>
+                   <!-- <imageTags>
+                        <imageTag>1.0.0</imageTag>
+                    </imageTags>-->
                 </configuration>
             </plugin>
         </plugins>
