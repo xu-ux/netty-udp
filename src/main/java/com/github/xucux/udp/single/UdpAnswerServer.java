@@ -21,6 +21,9 @@ public class UdpAnswerServer {
         startAnswer();
     }
 
+    /**
+     * 监听 0.0.0.0 的8761
+     */
     private static final int PORT = 8761;
 
     private static EventLoopGroup eventLoopGroup = new NioEventLoopGroup();

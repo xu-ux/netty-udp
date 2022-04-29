@@ -26,6 +26,9 @@ public class UdpQuestionServer {
 
     private static final int PORT = 8761;
 
+    /**
+     * 发送目标地址
+     */
     private static final String HOST = "127.0.0.1";
 
     private static String QUESTION_STR = "你好黄河，这里是长江，收到请回答，Over!";
